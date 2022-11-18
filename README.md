@@ -6,6 +6,8 @@ This is a repository for [SHACL](https://www.w3.org/TR/shacl/) shapes used in Sk
 
 ### `skos.shacl.ttl`
 
+*this is just a first draft, comments are very welcome*
+
 This shape is inspired by and borrows heavily from the SKOS-XL shape definition from [EU Vocabularies](https://op.europa.eu/fr/web/eu-vocabularies/application-profiles).
 
 Most adjustments were made regarding correcting syntax and pulling out the SPARQL-based constraints into dedicated shapes.

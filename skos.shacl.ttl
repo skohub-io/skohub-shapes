@@ -11,12 +11,12 @@
 
 # declare the skos prefix to use it in later SPARQL-based constraints
 skos:
-	a owl:Ontology ;
-	owl:imports sh: ;
-	sh:declare [
-		sh:prefix "skos" ;
-		sh:namespace "http://www.w3.org/2004/02/skos/core#"^^xsd:anyURI ;
-	] .
+  a owl:Ontology ;
+  owl:imports sh: ;
+  sh:declare [
+    sh:prefix "skos" ;
+    sh:namespace "http://www.w3.org/2004/02/skos/core#"^^xsd:anyURI ;
+  ] .
 
 # ConceptScheme
 :ConceptSchemeShape
@@ -45,7 +45,7 @@ skos:
     sh:message "Each skos:Concept has to provide a skos:prefLabel"
   ] ;
   sh:property [
-    sh:description "S14	A resource has no more than one value of skos:prefLabel per language tag." ;
+    sh:description "S14 A resource has no more than one value of skos:prefLabel per language tag." ;
     sh:path skos:prefLabel ;
     sh:datatype rdf:langString ;
     sh:uniqueLang true ;
@@ -124,7 +124,7 @@ skos:
   # ] ;
   sh:property [
     sh:path skos:related ;
-    sh:description "S27	skos:related is disjoint with the property skos:broaderTransitive." ;
+    sh:description "S27 skos:related is disjoint with the property skos:broaderTransitive." ;
     sh:disjoint skos:broader ;
     sh:disjoint skos:broaderTransitive ;
     sh:disjoint skos:narrower ;
@@ -158,9 +158,9 @@ skos:
   sh:targetClass skos:Concept ;
   sh:message "Orphaned concepts that are not linked to the ConceptScheme are not allowed." ;
   sh:sparql [
-		a sh:SPARQLConstraint ;
+    a sh:SPARQLConstraint ;
     sh:prefixes skos: ;
-		sh:select """
+    sh:select """
     SELECT $this
     WHERE {
       $this a skos:Concept ;
@@ -171,7 +171,7 @@ skos:
       }) 
      .
     }""" ;
-	] ;
+  ] ;
 .
 
 

@@ -15,7 +15,7 @@ At least with [Apache Jena SHACL](https://jena.apache.org/documentation/shacl/in
 
 ## Check with Apache Jena SHACL
 
-To use this shape with Apache Jena SHACL validate your file with `shacl validate --shapes skos.shacl.ttl --data YOUR-DATA.ttl`
+To use this shape with [Apache Jena](https://jena.apache.org/download/index.cgi) SHACL validate your file with `shacl validate --shapes skos.shacl.ttl --data YOUR-DATA.ttl`
 
 ## Check with Docker
 

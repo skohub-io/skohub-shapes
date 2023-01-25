@@ -153,53 +153,41 @@ skos:
   ] ;
   .
 
-:NoLinkToConceptScheme
-  a sh:NodeShape ;
-  sh:targetClass skos:Concept ;
-  sh:message "Orphaned concepts that are not linked to the ConceptScheme are not allowed." ;
-  sh:sparql [
-    a sh:SPARQLConstraint ;
-    sh:prefixes skos: ;
-    sh:select """
-    SELECT $this
-    WHERE {
-      $this a skos:Concept ;
-      FILTER (NOT EXISTS {
-        {$this skos:topConceptOf ?a }
-        UNION
-        {$this skos:inScheme ?a }
-      }) 
-     .
-    }""" ;
-  ] ;
-.
-
-
 :OrphanConcepts 
   a sh:NodeShape ;
   sh:targetClass skos:Concept ;
   sh:severity sh:Warning ;
   sh:sparql [
-    a sh:SPARQLConstraint ;   # This triple is optional
+    a sh:SPARQLConstraint ;
     sh:prefixes skos: ;
     rdfs:comment "Orphan Concept" ;
-    sh:description "An orphan concept is a concept without any associative or hierarchical relations. It might have attached literals like e.g., labels, but is not connected to any other resource, lacking valuable context information. A controlled vocabulary that contains many orphan concepts is less usable for search and retrieval use cases, because, e.g., no hierarchical query expansion can be performed on search terms to find documents with more general content." ;
-    sh:message "The concept is not a top concept of a Concept Scheme and neither has a broader or related concept. If it is a topConcept link it with skos:topConceptOf. Otherwise use one of the other relations." ;
+    sh:description """
+      An orphan concept is a concept without any associative or hierarchical 
+      relations. It might have attached literals like e.g., labels, but is 
+      not connected to any other resource, lacking valuable context information. 
+      A controlled vocabulary that contains many orphan concepts is less 
+      usable for search and retrieval use cases, because, e.g., no hierarchical 
+      query expansion can be performed on search terms to find documents with 
+      more general content.
+      """ ;
+    sh:message "The concept is not linked from a Concept Scheme or has no link to a Concept Scheme. Neither it has a relation to another concept. If it is a topConcept link it with skos:topConceptOf. Otherwise use one of the other relations." ;
     sh:severity sh:Info ;
     sh:select """
     SELECT $this 
     WHERE {
       $this a skos:Concept .
       FILTER NOT EXISTS {
-        ?this skos:topConceptOf ?cs .
+        ?this skos:topConceptOf | skos:inScheme ?cs .
       }
       FILTER NOT EXISTS {
-      ?this skos:broader | skos:broaderTransitive | skos:related ?other .
+        ?cs skos:hasTopConcept ?this .
+      }
+      FILTER NOT EXISTS {
+      {?this skos:broader | skos:broaderTransitive | skos:related | skos:narrower | skos:narrowerTransitive ?other .}
       }
     }""" ;
   ] ;
 .
-
 
 :AmbiguousNotatation
   a sh:NodeShape ;

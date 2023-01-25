@@ -24,3 +24,20 @@ To use this shape with [Apache Jena](https://jena.apache.org/download/index.cgi)
 To validate with the help of a docker container, you can run the following (run from current directory or adjust the respective paths to shape and your file):
 
 `docker run --rm -v $(pwd)/skos.shacl.ttl:/rdf/shape.ttl -v $(pwd)/YOUR_SKOS_FILE.ttl:/rdf/file.ttl skohub/jena:4.6.1 shacl v -s /rdf/shape.ttl -d /rdf/file.ttl`
+
+## Tests
+
+There is some basis test functionality provided to test the shape.
+Currently there are not many tests provided, but the general idea is as follows:
+- build a small valid Concept Scheme for a node shape
+- build a small invalid Concept Scheme for a node shape
+- put these in the appropriate folders under `test/`
+- check if it works with [`scripts/test.sh`](scripts/test.sh)
+
+These tests are also run on every push via GitHub Actions.
+
+It is very basic, but works like this:
+- all files in the valid folder are run against the shape. If the validation script exits with `exit 1` it returns an error
+- all files in the invalid folder are run against the shape. If the validation script exits with `exit 0` it returns an error
+
+Feel free to suggest improvements or add more tests!

@@ -1,0 +1,25 @@
+@prefix : <https://example.org/> .
+@prefix dct: <http://purl.org/dc/terms/>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+
+
+:cs1 a skos:ConceptScheme;
+    dct:title "Test"@de ;
+    skos:hasTopConcept :c1 ;
+    .
+
+:c1 a skos:Concept;
+    skos:prefLabel "1"@de ;
+    skos:inScheme : ;
+    .
+
+
+:cs2 a skos:ConceptScheme;
+    dct:title "Test"@de ;
+    skos:hasTopConcept :c2 ;
+    .
+
+:c2 a skos:Concept;
+    skos:prefLabel "2"@de ;
+    .
+

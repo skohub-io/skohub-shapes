@@ -6,7 +6,7 @@ for f in $FILES
 do
   echo "Processing $f ..."
   # take action on each file. $f store current file name
-  scripts/validate-skos.sh -f "$f" -s skos.shacl.ttl -l both
+  scripts/validate-skos.sh -f "$f" -s skos.shacl.ttl -l both 2>/dev/null
   if test $? -eq 1; then echo "Error: This should be valid, but is invalid"; error=true; fi;
 done
 

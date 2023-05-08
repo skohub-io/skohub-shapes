@@ -41,6 +41,7 @@ skos:
   sh:property [
     sh:path skos:prefLabel ;
     sh:minCount 1;
+    sh:severity sh:Warning ;
     sh:datatype rdf:langString ;
     sh:message "Each skos:Concept has to provide a skos:prefLabel"
   ] ;

@@ -1,0 +1,11 @@
+prefix sh: <http://www.w3.org/ns/shacl#>
+
+SELECT DISTINCT ?type ?msg {
+  ?shape sh:message ?msg .
+  #FILTER (lang(?msg) = 'en')
+
+  OPTIONAL { ?shape sh:severity ?severity }
+  BIND(STRAFTER(STR(COALESCE(?severity,sh:Violation)),'#') as ?type)
+
+  #filter(regex(?msg,"S[0-9]+"))
+} ORDER BY ?type

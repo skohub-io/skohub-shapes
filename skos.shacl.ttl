@@ -43,14 +43,14 @@ skos:
     sh:minCount 1;
     sh:severity sh:Warning ;
     sh:datatype rdf:langString ;
-    sh:message "Each skos:Concept has to provide a skos:prefLabel"
+    sh:message "Each skos:Concept should provide a skos:prefLabel"
   ] ;
   sh:property [
     sh:description "S14 A resource has no more than one value of skos:prefLabel per language tag." ;
     sh:path skos:prefLabel ;
     sh:datatype rdf:langString ;
     sh:uniqueLang true ;
-    sh:message "Each skos:Concept has to provide a unique language for skos:prefLabel" ;
+    sh:message "S14: Each skos:Concept has to provide a unique language for skos:prefLabel" ;
   ] ;
   sh:property [
     sh:path skos:altLabel ;
@@ -62,7 +62,7 @@ skos:
   # min count is checked above
   sh:property [
     sh:path skos:prefLabel ;
-    sh:description "\"Constraint S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel must be disjoint\"" ;
+    sh:message "S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel must be disjoint" ;
     sh:disjoint skos:altLabel ;
     sh:disjoint skos:hiddenLabel ;
     # sh:minCount 1 ;
@@ -70,7 +70,7 @@ skos:
   ] ;
   sh:property [
     sh:path skos:altLabel ;
-    sh:description "\"Constraint S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel must be disjoint\"" ;
+    sh:message "S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel must be disjoint" ;
     sh:disjoint skos:hiddenLabel ;
     sh:disjoint skos:prefLabel ;
     sh:name "alt label" ;
@@ -125,7 +125,7 @@ skos:
   # ] ;
   sh:property [
     sh:path skos:related ;
-    sh:description "S27 skos:related is disjoint with the property skos:broaderTransitive." ;
+    sh:message "S27: skos:related is disjoint with the property skos:broaderTransitive" ;
     sh:disjoint skos:broader ;
     sh:disjoint skos:broaderTransitive ;
     sh:disjoint skos:narrower ;
@@ -198,7 +198,7 @@ skos:
     a sh:SPARQLConstraint ;
     sh:prefixes skos: ;
     rdfs:comment "Ambiguous Notation References" ;
-    sh:description "Concepts should not have identlical skos:notation literals." ;
+    sh:description "Concepts should not have identical skos:notation literals." ;
     sh:message "the concept has the same notation {$value} as {$path}" ;
     sh:select """
     SELECT $this (?other as ?path) ?value

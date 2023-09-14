@@ -66,6 +66,9 @@ a sh:PropertyGroup ;
     sh:minCount 1;
     sh:datatype rdf:langString ;
     sh:message "Concept Scheme has no dct:title with a language tag!"
+    sh:severity sh:Warning;
+    rdfs:comment "This is SkoHub specific" ;
+    sh:group :SkoHub
   ] ;
   sh:property [
     sh:path skos:hasTopConcept ;

@@ -7,6 +7,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix dct: <http://purl.org/dc/terms/> .
+@prefix sdo: <https://schema.org> .
 
 
 # declare the skos prefix to use it in later SPARQL-based constraints
@@ -17,6 +18,37 @@ skos:
     sh:prefix "skos" ;
     sh:namespace "http://www.w3.org/2004/02/skos/core#"^^xsd:anyURI ;
   ] .
+
+:SkoHub 
+  a sh:PropertyGroup ;
+  rdfs:label "Properties that are SkoHub specific and stricter than SKOS Reference." ;
+  .
+
+:s9
+ a sh:PropertyGroup ;
+  rdfs:label "skos:ConceptScheme is disjoint with skos:Concept." ;
+  sdo:url "https://www.w3.org/TR/skos-reference/#S9" ;
+  .
+
+
+:s12
+  a sh:PropertyGroup ;
+  rdfs:label "S12: The rdfs:range of each of skos:prefLabel, skos:altLabel and skos:hiddenLabel is the class of RDF plain literals." ;
+  sdo:url "https://www.w3.org/TR/skos-reference/#S12" ;
+  .
+
+:s13
+  a sh:PropertyGroup ;
+  rdfs:label "S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel are pairwise disjoint properties.." ;
+  sdo:url "https://www.w3.org/TR/skos-reference/#S13"
+  .
+
+:s14
+  a sh:PropertyGroup ;
+  rdfs:label "S14: A resource has no more than one value of skos:prefLabel per language tag." ;
+  sdo:url "https://www.w3.org/TR/skos-reference/#S14"
+  .
+
 
 # ConceptScheme
 :ConceptSchemeShape
@@ -31,18 +63,21 @@ skos:
   sh:property [
     sh:path skos:hasTopConcept ;
     sh:class skos:Concept ;
-  ]
+  ] ;
   .
 
 # Concept
 :ConceptShape
   a sh:NodeShape ;
   sh:targetClass skos:Concept ;
+
   sh:property [
+    sh:name "S14: Unique skos:prefLabel" ;
     sh:path skos:prefLabel ;
     sh:minCount 1;
     sh:datatype rdf:langString ;
-    sh:message "Each skos:Concept has to provide a skos:prefLabel"
+    sh:message "Constraint S14: A resource has no more than one value of skos:prefLabel per language tag." ;
+    sh:group: :s14 ;
   ] ;
   sh:property [
     sh:description "S14 A resource has no more than one value of skos:prefLabel per language tag." ;
@@ -51,20 +86,12 @@ skos:
     sh:uniqueLang true ;
     sh:message "Each skos:Concept has to provide a unique language for skos:prefLabel" ;
   ] ;
-  sh:property [
-    sh:path skos:altLabel ;
-    sh:datatype rdf:langString ;
-    sh:name "alt label" ;
-    sh:severity sh:Warning ;
-  ] ;
-  # removed minCount because we check for disjointness here.
-  # min count is checked above
+  
   sh:property [
     sh:path skos:prefLabel ;
-    sh:description "\"Constraint S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel must be disjoint\"" ;
+    sh:description "Constraint S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel must be disjoint" ;
     sh:disjoint skos:altLabel ;
     sh:disjoint skos:hiddenLabel ;
-    # sh:minCount 1 ;
     sh:name "pref label" ;
   ] ;
   sh:property [
@@ -80,11 +107,11 @@ skos:
     sh:name "broader" ;
     sh:nodeKind sh:IRI ;
   ] ;
-  sh:property [
-    sh:path skos:definition ;
-    sh:datatype rdf:langString ;
-    sh:name "definition" ;
-  ] ;
+  # sh:property [
+  #   sh:path skos:definition ;
+  #   sh:datatype rdf:langString ;
+  #   sh:name "definition" ;
+  # ] ;
   # duplicate of :Undocumented Concept?
   sh:property [
     sh:deactivated true ;
@@ -350,13 +377,29 @@ skos:
   sh:targetClass skos:Concept ;
   sh:sparql [
     sh:prefixes skos: ;
-    sh:message "A Concept cannot be also a ConceptScheme " ;
+    sh:message "A concept cannot also a be ConceptScheme " ;
     sh:select """
     SELECT $this
     WHERE {
       $this a skos:ConceptScheme 
     }""" ;
   ] ;
+  sh:group :s9 ;
+.
+
+:DisjointConceptSchemeAndConcept
+  a sh:NodeShape ;
+  sh:targetClass skos:ConceptScheme ;
+  sh:sparql [
+    sh:prefixes skos: ;
+    sh:message "A concept scheme cannot also be a Concept" ;
+    sh:select """
+    SELECT $this
+    WHERE {
+      $this a skos:Concept
+    }""" ;
+  ] ;
+  sh:group :s9 ;
 .
 
 

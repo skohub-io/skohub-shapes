@@ -25,6 +25,11 @@ To validate with the help of a docker container, you can run the following (run 
 
 `docker run --rm -v $(pwd)/skos.shacl.ttl:/rdf/shape.ttl -v $(pwd)/YOUR_SKOS_FILE.ttl:/rdf/file.ttl skohub/jena:4.6.1 shacl v -s /rdf/shape.ttl -d /rdf/file.ttl`
 
+## Checked Constraints
+
+[S13](https://www.w3.org/TR/skos-reference/#L1567): skos:prefLabel, skos:altLabel and skos:hiddenLabel are pairwise disjoint properties.
+[S14]https://www.w3.org/TR/skos-reference/#L1567: A resource has no more than one value of skos:prefLabel per language tag.
+
 ## Tests
 
 There is some basis test functionality provided to test the shape.

@@ -39,7 +39,7 @@ else
     SEVERITY_FILE="$(pwd)/scripts/checkForViolation.rq"
 fi
 
-validationResult="$(docker run --rm -v $SEVERITY_FILE:/rdf/checkForViolation.rq --mount type=bind,source=$(pwd)/result.ttl,target=/rdf/result.ttl skohub/jena:4.6.1 arq --data /rdf/result.ttl --query /rdf/checkForViolation.rq)"
+validationResult="$(docker run --rm -v $SEVERITY_FILE:/rdf/check.rq --mount type=bind,source=$(pwd)/result.ttl,target=/rdf/result.ttl skohub/jena:4.6.1 arq --data /rdf/result.ttl --query /rdf/check.rq)"
 
 lines=$(echo "$validationResult" | wc -l )
 

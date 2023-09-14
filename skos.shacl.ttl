@@ -24,6 +24,13 @@ skos:
   rdfs:label "Properties that are SkoHub specific and stricter than SKOS Reference." ;
   .
 
+:s6
+a sh:PropertyGroup ;
+  rdfs:label "S6: The rdfs:range of skos:hasTopConcept is the class skos:Concept." ;
+  sdo:url "https://www.w3.org/TR/skos-reference/#S6" ;
+  .
+
+
 :s9
  a sh:PropertyGroup ;
   rdfs:label "S9: skos:ConceptScheme is disjoint with skos:Concept." ;
@@ -63,6 +70,7 @@ skos:
   sh:property [
     sh:path skos:hasTopConcept ;
     sh:class skos:Concept ;
+    sh:group :s6 ;
   ] ;
   .
 

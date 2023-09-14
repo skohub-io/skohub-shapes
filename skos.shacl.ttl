@@ -26,7 +26,7 @@ skos:
 
 :s9
  a sh:PropertyGroup ;
-  rdfs:label "skos:ConceptScheme is disjoint with skos:Concept." ;
+  rdfs:label "S9: skos:ConceptScheme is disjoint with skos:Concept." ;
   sdo:url "https://www.w3.org/TR/skos-reference/#S9" ;
   .
 
@@ -65,6 +65,36 @@ skos:
     sh:class skos:Concept ;
   ] ;
   .
+
+:DisjointConceptAndConceptScheme
+  a sh:NodeShape ;
+  sh:targetClass skos:Concept ;
+  sh:sparql [
+    sh:prefixes skos: ;
+    sh:message "S9: skos:ConceptScheme is disjoint with skos:Concept." ;
+    sh:select """
+    SELECT $this
+    WHERE {
+      $this a skos:ConceptScheme 
+    }""" ;
+  ] ;
+  sh:group :s9 ;
+.
+
+:DisjointConceptSchemeAndConcept
+  a sh:NodeShape ;
+  sh:targetClass skos:ConceptScheme ;
+  sh:sparql [
+    sh:prefixes skos: ;
+    sh:message "S9: skos:ConceptScheme is disjoint with skos:Concept." ;
+    sh:select """
+    SELECT $this
+    WHERE {
+      $this a skos:Concept
+    }""" ;
+  ] ;
+  sh:group :s9 ;
+.
 
 # Concept
 :ConceptShape
@@ -371,36 +401,6 @@ skos:
         FILTER NOT EXISTS {?this skos:definition|skos:note|skos:example|skos:historyNote|skos:scopeNote ?note}
     }""" ;
   ] ;
-.
-
-:DisjointConceptAndConceptScheme
-  a sh:NodeShape ;
-  sh:targetClass skos:Concept ;
-  sh:sparql [
-    sh:prefixes skos: ;
-    sh:message "A concept cannot also a be ConceptScheme " ;
-    sh:select """
-    SELECT $this
-    WHERE {
-      $this a skos:ConceptScheme 
-    }""" ;
-  ] ;
-  sh:group :s9 ;
-.
-
-:DisjointConceptSchemeAndConcept
-  a sh:NodeShape ;
-  sh:targetClass skos:ConceptScheme ;
-  sh:sparql [
-    sh:prefixes skos: ;
-    sh:message "A concept scheme cannot also be a Concept" ;
-    sh:select """
-    SELECT $this
-    WHERE {
-      $this a skos:Concept
-    }""" ;
-  ] ;
-  sh:group :s9 ;
 .
 
 

@@ -75,6 +75,7 @@ skos:
     sh:name "S14: Unique skos:prefLabel" ;
     sh:path skos:prefLabel ;
     sh:minCount 1;
+    sh:severity sh:Warning ;
     sh:datatype rdf:langString ;
     sh:message "Constraint S14: A resource has no more than one value of skos:prefLabel per language tag." ;
     sh:group: :s14 ;

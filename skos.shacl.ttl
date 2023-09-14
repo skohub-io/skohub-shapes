@@ -110,6 +110,20 @@ a sh:PropertyGroup ;
   sh:targetClass skos:Concept ;
 
   sh:property [
+    sh:path skos:prefLabel ;
+    sh:description "Constraint S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel must be disjoint" ;
+    sh:disjoint skos:altLabel ;
+    sh:disjoint skos:hiddenLabel ;
+    sh:name "pref label" ;
+  ] ;
+  sh:property [
+    sh:path skos:altLabel ;
+    sh:description "\"Constraint S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel must be disjoint\"" ;
+    sh:disjoint skos:hiddenLabel ;
+    sh:disjoint skos:prefLabel ;
+    sh:name "alt label" ;
+  ] ;
+  sh:property [
     sh:name "S14: Unique skos:prefLabel" ;
     sh:path skos:prefLabel ;
     sh:minCount 1;
@@ -126,20 +140,6 @@ a sh:PropertyGroup ;
     sh:message "Each skos:Concept has to provide a unique language for skos:prefLabel" ;
   ] ;
   
-  sh:property [
-    sh:path skos:prefLabel ;
-    sh:description "Constraint S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel must be disjoint" ;
-    sh:disjoint skos:altLabel ;
-    sh:disjoint skos:hiddenLabel ;
-    sh:name "pref label" ;
-  ] ;
-  sh:property [
-    sh:path skos:altLabel ;
-    sh:description "\"Constraint S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel must be disjoint\"" ;
-    sh:disjoint skos:hiddenLabel ;
-    sh:disjoint skos:prefLabel ;
-    sh:name "alt label" ;
-  ] ;
   sh:property [
     sh:path skos:broader ;
     sh:class skos:Concept ;

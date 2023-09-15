@@ -15,6 +15,8 @@ At least with [Apache Jena SHACL](https://jena.apache.org/documentation/shacl/in
 
 If you take our [template repo](https://github.com/skohub-io/vocab-template) as a starting point the validation against this shape is already built in.
 
+Run `scripts/messages.sh` to get a list of shape messages to summarize the constraints checked by shapes.
+
 ## Check with Apache Jena SHACL
 
 To use this shape with [Apache Jena](https://jena.apache.org/download/index.cgi) SHACL validate your file with `shacl validate --shapes skos.shacl.ttl --data YOUR-DATA.ttl`

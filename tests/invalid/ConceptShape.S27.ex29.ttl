@@ -6,11 +6,12 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-skos:narrowerTransitive a owl:TransitiveProperty .
-skos:narrower rdfs:subPropertyOf skos:narrowerTransitive .
-skos:narrower owl:inverse skos:broader .
-skos:narrowerTransitive owl:inverseOf skos:broaderTransitive .
-
+skos:narrower rdfs:subPropertyOf skos:narrowerTransitive . #S22
+skos:broader rdfs:subPropertyOf skos:broaderTransitive . #S22
+skos:narrowerTransitive a owl:TransitiveProperty . #S24
+skos:broaderTransitive a owl:TransitiveProperty . #S24
+skos:narrower owl:inverse skos:broader . #S25
+skos:narrowerTransitive owl:inverseOf skos:broaderTransitive . #S26
 
 : a skos:ConceptScheme;
     dct:title "Test"@de ;

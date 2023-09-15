@@ -56,6 +56,11 @@ a sh:PropertyGroup ;
   sdo:url "https://www.w3.org/TR/skos-reference/#S14"
   .
 
+:s27
+  a sh:PropertyGroup ;
+  rdfs:label "S27: skos:related is disjoint with the property skos:broaderTransitive." ;
+  sdo:url "https://www.w3.org/TR/skos-reference/#S27" ;
+  .
 
 # ConceptScheme
 :ConceptSchemeShape
@@ -193,12 +198,14 @@ a sh:PropertyGroup ;
   # ] ;
   sh:property [
     sh:path skos:related ;
-    sh:description "S27 skos:related is disjoint with the property skos:broaderTransitive." ;
+    sh:message "S27 skos:related is disjoint with the property skos:broaderTransitive." ;
     sh:disjoint skos:broader ;
     sh:disjoint skos:broaderTransitive ;
     sh:disjoint skos:narrower ;
     sh:disjoint skos:narrowerTransitive ;
     sh:name "related" ;
+    sh:group :s27 ;
+    sh:targetObjectsOf skos:broader ;
   ] ;
   sh:property [
     sh:path skos:relatedMatch ;

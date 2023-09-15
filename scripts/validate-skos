@@ -1,0 +1,81 @@
+#!/bin/bash
+set -euo pipefail
+
+scripts=$(realpath $(dirname -- "$0"))
+shape=$(realpath "$scripts/../skos.shacl.ttl")
+severity=all
+report=
+
+usage() {
+    echo "$0 [OPTION]... FILE"
+    echo "Validate SKOS file (Turtle syntax). No return message means everything is fine."
+    echo
+    echo "Options:"
+    echo "  -s FILE  shape file (default: $shape)"
+    echo "  -l LEVEL severity violation|warning|all (default: $severity)"
+    echo "  -o FILE  keep full validation report in this file"
+    echo "  -r       show raw validation report and exit"
+    echo "  -h       show this help message"
+    exit $1
+}
+
+die() {
+    echo "$*" >&2
+    exit 1
+}
+
+while getopts s:l:o:rh flag
+do
+    case "${flag}" in
+        s) shape=${OPTARG};;
+        l) severity=${OPTARG};;
+        o) result=${OPTARG};;
+        r) report=1;;
+        h) usage 0;;
+        *) usage 1;;
+    esac
+done
+shift $(($OPTIND - 1))
+
+[ -z "${1:-}" ] && usage 1
+
+file=$(realpath "$1")
+[ -f "$file" ] || die "File not found: $file"
+
+shape=$(realpath "$shape")
+[ -f "$shape" ] || die "File not found: $shape"
+
+grep -vE '^\s*(#.*)?$' "$file" >/dev/null || die "File contains no RDF statements: $file"
+
+if [[ $severity == "warning" ]]; then
+    SEVERITY_FILE="$scripts/checkForWarning.rq"
+elif [[ $severity == "all" ]]; then
+    SEVERITY_FILE="$scripts/checkForBoth.rq"
+elif [[ $severity == "violation" ]]; then
+    SEVERITY_FILE="$scripts/checkForViolation.rq"
+else
+    die "Unknown severity: $severity"
+fi
+
+# create temporary file and make sure it gets deleted
+if [[ -z "${result:-}" ]]; then
+    result=$(mktemp /tmp/validate-script.XXXXXX)
+    trap "rm -f -- \"$result\"" 0 2 3 15 
+else
+    result=$(realpath "$result")
+fi
+
+docker run --rm -v "$shape:/rdf/shape.ttl" -v "$file:/rdf/file.ttl" skohub/jena:4.6.1 shacl v -s /rdf/shape.ttl -d /rdf/file.ttl > "$result"
+
+if [[ "$report" -eq 1 ]]; then
+  cat "$result"
+else
+  validationResult="$(docker run --rm -v $SEVERITY_FILE:/rdf/checkForViolation.rq --mount type=bind,source=$result,target=/rdf/result.ttl skohub/jena:4.6.1 arq --data /rdf/result.ttl --query /rdf/checkForViolation.rq)"
+
+  lines=$(echo "$validationResult" | wc -l )
+
+  # Correct validation has 4 lines of output
+  [[ ${lines} -eq 4 ]] || die "$validationResult"
+
+fi
+

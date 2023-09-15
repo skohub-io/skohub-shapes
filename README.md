@@ -21,9 +21,11 @@ To use this shape with [Apache Jena](https://jena.apache.org/download/index.cgi)
 
 ## Check with Docker
 
-To validate with the help of a docker container, you can run the following (run from current directory or adjust the respective paths to shape and your file):
+To validate with the help of a docker container, you can run the script `scripts/validate-skos`:
 
-`docker run --rm -v $(pwd)/skos.shacl.ttl:/rdf/shape.ttl -v $(pwd)/YOUR_SKOS_FILE.ttl:/rdf/file.ttl skohub/jena:4.6.1 shacl v -s /rdf/shape.ttl -d /rdf/file.ttl`
+    ./scripts/validate-skos YOUR_SKOS_FILE_TTL
+
+Call with `-h` or without arguments to list options.
 
 ## Checked Constraints
 

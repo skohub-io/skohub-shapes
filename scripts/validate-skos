@@ -66,7 +66,7 @@ else
 fi
 
 # start fuseki
-docker run -d --rm --name fuseki -p 3030:3030 -v /home/steffen/coding/skohub/shapes/fuseki/config_inference.ttl:/fuseki/config_inference.ttl jena-fuseki:latest /jena-fuseki/fuseki-server --config /fuseki/config_inference.ttl > /dev/null
+docker run -d --rm --name fuseki -p 3030:3030 -v /home/steffen/coding/skohub/shapes/fuseki/config_inference.ttl:/fuseki/config_inference.ttl skohub/jena-fuseki:latest /jena-fuseki/fuseki-server --config /fuseki/config_inference.ttl > /dev/null
 
 sleep 3
 # wait till fuseki is up

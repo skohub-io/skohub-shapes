@@ -65,12 +65,47 @@ else
     result=$(realpath "$result")
 fi
 
-docker run --rm -v "$shape:/rdf/shape.ttl" -v "$file:/rdf/file.ttl" skohub/jena:4.6.1 shacl v -s /rdf/shape.ttl -d /rdf/file.ttl > "$result"
+# start fuseki
+docker run -d --rm --name fuseki -p 3030:3030 -v /home/steffen/coding/skohub/shapes/fuseki/config_inference.ttl:/fuseki/config_inference.ttl jena-fuseki:latest /jena-fuseki/fuseki-server --config /fuseki/config_inference.ttl > /dev/null
+
+sleep 3
+# wait till fuseki is up
+max_attempts=5
+delay=4
+attempt=1
+
+while [ $attempt -le $max_attempts ]; do
+  # echo "Attempt $attempt/$max_attempts"
+  curl 'http://localhost:3030/$/ping' > /dev/null && break 
+  # echo "Failed. Fuseki not yet there. Retrying in $delay seconds..."
+  sleep $delay
+  attempt=$((attempt + 1))
+done
+
+if [ $attempt -gt $max_attempts ]; then
+  echo "The command has failed after $max_attempts attempts."
+  exit 1
+fi
+
+# upload file
+curl --request POST \
+  --url 'http://localhost:3030/dataset/data?graph=default' \
+  --header 'Content-Type: text/turtle' \
+  --data-binary @$file > /dev/null
+
+# validate w/ shacl
+curl --request POST \
+  --url 'http://localhost:3030/dataset/shacl?graph=default' \
+  --header 'Content-Type: text/turtle' \
+  --data-binary @$shape > "$result" 
 
 if [[ "$report" -eq 1 ]]; then
+  docker container stop fuseki
   cat "$result"
 else
   validationResult="$(docker run --rm -v $SEVERITY_FILE:/rdf/checkForViolation.rq --mount type=bind,source=$result,target=/rdf/result.ttl skohub/jena:4.6.1 arq --data /rdf/result.ttl --query /rdf/checkForViolation.rq)"
+
+  docker container stop fuseki > /dev/null
 
   lines=$(echo "$validationResult" | wc -l )
 

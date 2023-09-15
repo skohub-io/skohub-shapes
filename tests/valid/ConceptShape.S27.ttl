@@ -1,0 +1,29 @@
+@prefix : <https://example.org/> .
+@prefix dct: <http://purl.org/dc/terms/>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+
+
+:cs1 a skos:ConceptScheme;
+    dct:title "Test"@de ;
+    skos:hasTopConcept :c1 ;
+    .
+
+:c1 a skos:Concept ;
+    skos:prefLabel "1"@de ;
+    skos:broader :c2 ;
+    skos:related :c3 ;
+    skos:inScheme : ;
+    .
+
+:c2 a skos:Concept ;
+    skos:prefLabel "2"@de ;
+    skos:inScheme : ;
+    .
+
+:c3 a skos:Concept ;
+    skos:prefLabel "3"@de ;
+    skos:inScheme : ;
+    .

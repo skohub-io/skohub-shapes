@@ -1,0 +1,33 @@
+@prefix : <https://example.org/> .
+@prefix dct: <http://purl.org/dc/terms/>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+skos:narrowerTransitive a owl:TransitiveProperty .
+skos:narrower rdfs:subPropertyOf skos:narrowerTransitive .
+skos:narrower owl:inverse skos:broader .
+skos:narrowerTransitive owl:inverseOf skos:broaderTransitive .
+
+
+: a skos:ConceptScheme;
+    dct:title "Test"@de ;
+    skos:hasTopConcept :ca ;
+    .
+
+:ca a skos:Concept ;
+    skos:prefLabel "1"@de ;
+    skos:narrower :cb ;
+    skos:related :cc ;
+    skos:inScheme : ;
+    .
+
+:cb a skos:Concept ;
+    skos:narrower :cc ;
+    skos:inScheme : ;
+    .
+:cc a skos:Concept ;
+    skos:inScheme : ;
+    .

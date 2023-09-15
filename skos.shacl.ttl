@@ -205,7 +205,6 @@ a sh:PropertyGroup ;
     sh:disjoint skos:narrowerTransitive ;
     sh:name "related" ;
     sh:group :s27 ;
-    sh:targetObjectsOf skos:broader ;
   ] ;
   sh:property [
     sh:path skos:relatedMatch ;

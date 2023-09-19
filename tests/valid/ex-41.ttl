@@ -1,0 +1,8 @@
+@prefix : <https://example.org/> .
+@prefix dct: <http://purl.org/dc/terms/>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<MyOrderedCollection> rdf:type skos:OrderedCollection ;
+  skos:memberList ( <X> <Y> <Z> ) .

@@ -29,8 +29,11 @@ Call with `-h` or without arguments to list options.
 
 ## Checked Constraints
 
-[S13](https://www.w3.org/TR/skos-reference/#L1567): skos:prefLabel, skos:altLabel and skos:hiddenLabel are pairwise disjoint properties.
-[S14]https://www.w3.org/TR/skos-reference/#L1567: A resource has no more than one value of skos:prefLabel per language tag.
+All class and property definitions from the [SKOS reference](https://www.w3.org/TR/skos-reference/) are added in the test files.
+All valid and invalid consistency examples are added to the test files.
+
+Integrity conditions are checked by the `skos.shacl.ttl` shape.
+
 
 ## Tests
 

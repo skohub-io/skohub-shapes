@@ -1,4 +1,3 @@
-@prefix : <https://example.org/> .
 @prefix dct: <http://purl.org/dc/terms/>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#>.
@@ -121,4 +120,8 @@ skos:relatedMatch a owl:ObjectProperty ; #S38
   a owl:SymmetricProperty ; #S44
   .
 
-<A> skos:exactMatch <B> ; skos:relatedMatch <B> .
+<A> skos:broadMatch <B> ; skos:relatedMatch <C> .
+
+<A> skos:inScheme <MyScheme> .
+<B> skos:inScheme <MyScheme> .
+<C> skos:inScheme <MyScheme> .

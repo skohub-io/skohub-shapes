@@ -158,20 +158,6 @@ a sh:PropertyGroup ;
     sh:group :s27 ;
   ] ;
   sh:property [
-    sh:path skos:relatedMatch ;
-    sh:class skos:Concept ;
-    sh:name "related match" ;
-    sh:nodeKind sh:IRI ;
-  ] ;
-  sh:property [
-    sh:path skos:relatedMatch ;
-    sh:disjoint skos:broadMatch ;
-    sh:disjoint skos:closeMatch ;
-    sh:disjoint skos:exactMatch ;
-    sh:disjoint skos:narrowMatch ;
-    sh:name "related match" ;
-  ] ;
-  sh:property [
     sh:path skos:topConceptOf ;
     sh:class skos:ConceptScheme ;
     sh:name "top concept of" ;
@@ -338,43 +324,19 @@ a sh:PropertyGroup ;
 
 :DisjointMappingRelations
   a sh:NodeShape ;
-  rdfs:comment "Disjoint mapping relations" ;
-  sh:property [
-      sh:path skos:closeMatch ;
-    sh:message "S46: skos:exactMatch is disjoint with each of the properties skos:broadMatch and skos:relatedMatch." ;
-      sh:disjoint skos:broadMatch ;
-      sh:disjoint skos:exactMatch ;
-      sh:disjoint skos:narrowMatch ;
-      sh:disjoint skos:relatedMatch ;
-      sh:name "close match" ;
-    ] ;
   sh:property [
       sh:path skos:exactMatch ;
-    sh:message "S46: skos:exactMatch is disjoint with each of the properties skos:broadMatch and skos:relatedMatch." ;
+      sh:message "S46: skos:exactMatch is disjoint with each of the properties skos:broadMatch and skos:relatedMatch." ;
       sh:disjoint skos:broadMatch ;
-      sh:disjoint skos:closeMatch ;
-      sh:disjoint skos:narrowMatch ;
       sh:disjoint skos:relatedMatch ;
-      sh:name "exact match" ;
-    ] ;
+      sh:disjoint skos:narrowMatch ; #since broadMatch and narrowMatch are inverses
+    ];
   sh:property [
-      sh:path skos:narrowMatch ;
-    sh:message "S46: skos:exactMatch is disjoint with each of the properties skos:broadMatch and skos:relatedMatch." ;
-      sh:disjoint skos:broadMatch ;
-      sh:disjoint skos:closeMatch ;
-      sh:disjoint skos:exactMatch ;
-      sh:disjoint skos:relatedMatch ;
-      sh:name "narrow match" ;
-    ] ;
-  sh:property [
-      sh:path skos:relatedMatch ;
-    sh:message "S46: skos:exactMatch is disjoint with each of the properties skos:broadMatch and skos:relatedMatch." ;
-      sh:disjoint skos:broadMatch ;
-      sh:disjoint skos:closeMatch ;
-      sh:disjoint skos:exactMatch ;
-      sh:disjoint skos:narrowMatch ;
-      sh:name "related match" ;
-    ] ;
+    sh:path skos:relatedMatch ;
+    sh:class skos:Concept ;
+    sh:name "related match" ;
+    sh:nodeKind sh:IRI ;
+  ] ;
   sh:targetObjectsOf skos:broadMatch ;
   sh:targetObjectsOf skos:closeMatch ;
   sh:targetObjectsOf skos:exactMatch ;

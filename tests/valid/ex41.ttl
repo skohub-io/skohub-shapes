@@ -82,7 +82,10 @@ skos:OrderedCollection a owl:Class . #S28
 skos:OrderedCollection rdfs:subClassOf skos:Collection . #S29
 skos:member a owl:ObjectProperty ; #S30
   rdfs:domain skos:Collection ; #S31
-  rdfs:range skos:Concept , skos:Collection ; #S32
+  rdfs:range [
+    a owl:Class ;
+    owl:unionOf (skos:Concept skos:Collection)
+  ] ; #S32
   .
 skos:memberList a owl:ObjectProperty ; #S30
   rdfs:domain skos:OrderedCollection ; #S33

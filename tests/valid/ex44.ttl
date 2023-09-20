@@ -93,9 +93,8 @@ skos:memberList a owl:ObjectProperty ; #S30
   a owl:FunctionalProperty ; #S35
   .
 
-skos:Concept owl:disjointWith skos:Collection .
+<MyCollection> rdf:type skos:Collection ;
+  skos:member <A> , <B> , <MyNestedCollection> .
 
-<A> skos:narrower <B> , <C> , <D> .
-
-<ResourceCollection> rdfs:label "Resource Collection"@en ;
-  skos:member <B> , <C> , <D> .
+<MyNestedCollection> rdf:type skos:Collection ;
+  skos:member <X> , <Y> , <Z> .

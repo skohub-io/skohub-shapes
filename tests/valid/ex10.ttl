@@ -1,4 +1,3 @@
-@prefix : <https://example.org/> .
 @prefix dct: <http://purl.org/dc/terms/>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#>.
@@ -6,6 +5,7 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
+skos:Concept a owl:Class . # S1
 skos:ConceptScheme a owl:Class . # S2
 skos:inScheme a owl:ObjectProperty . #S3
 skos:hasTopConcept a owl:ObjectProperty . #S3

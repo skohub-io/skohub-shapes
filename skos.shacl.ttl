@@ -67,15 +67,6 @@ a sh:PropertyGroup ;
   a sh:NodeShape ;
   sh:targetClass skos:ConceptScheme ;
   sh:property [
-    sh:path dct:title ;
-    sh:minCount 1;
-    sh:datatype rdf:langString ;
-    sh:message "Concept Scheme has no dct:title with a language tag!" ;
-    sh:severity sh:Warning ;
-    rdfs:comment "This is SkoHub specific" ;
-    sh:group :SkoHub
-  ] ;
-  sh:property [
     sh:path skos:hasTopConcept ;
     sh:class skos:Concept ;
     sh:group :s6 ;
@@ -115,30 +106,35 @@ a sh:PropertyGroup ;
 # Concept
 :ConceptShape
   a sh:NodeShape ;
-  sh:targetClass skos:Concept ;
-
+  sh:targetSubjectsOf skos:prefLabel ;
+  sh:targetSubjectsOf skos:altLabel ;
+  sh:targetSubjectsOf skos:hiddenLabel ;
   sh:property [
     sh:path skos:prefLabel ;
-    sh:description "Constraint S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel must be disjoint" ;
+    sh:message "S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel are pairwise disjoint properties." ;
     sh:disjoint skos:altLabel ;
     sh:disjoint skos:hiddenLabel ;
     sh:name "pref label" ;
   ] ;
   sh:property [
     sh:path skos:altLabel ;
-    sh:description "\"Constraint S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel must be disjoint\"" ;
+    sh:message "S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel are pairwise disjoint properties." ;
     sh:disjoint skos:hiddenLabel ;
     sh:disjoint skos:prefLabel ;
     sh:name "alt label" ;
   ] ;
   sh:property [
-    sh:description "S14 A resource has no more than one value of skos:prefLabel per language tag." ;
     sh:path skos:prefLabel ;
+    sh:message "S14: A resource has no more than one value of skos:prefLabel per language tag." ;
     sh:datatype rdf:langString ;
     sh:uniqueLang true ;
-    sh:message "Each skos:Concept has to provide a unique language for skos:prefLabel" ;
   ] ;
-  
+  .
+
+:ConceptSemanticRelations
+  a sh:NodeShape ;
+  sh:targetSubjectsOf skos:broader ;
+  sh:targetSubjectsOf skos:related ;
   sh:property [
     sh:path skos:broader ;
     sh:class skos:Concept ;
@@ -153,7 +149,7 @@ a sh:PropertyGroup ;
   ] ;
   sh:property [
     sh:path skos:related ;
-    sh:message "S27 skos:related is disjoint with the property skos:broaderTransitive." ;
+    sh:message "S27: skos:related is disjoint with the property skos:broaderTransitive." ;
     sh:disjoint skos:broader ;
     sh:disjoint skos:broaderTransitive ;
     sh:disjoint skos:narrower ;

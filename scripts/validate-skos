@@ -24,6 +24,14 @@ die() {
     exit 1
 }
 
+cleanup() {
+    rm -f -- $testfile
+    rm -f -- $result
+    docker container stop fuseki > /dev/null
+}
+
+trap cleanup 0 2 3 15 
+
 while getopts s:l:o:rh flag
 do
     case "${flag}" in
@@ -41,11 +49,15 @@ shift $(($OPTIND - 1))
 
 file=$(realpath "$1")
 [ -f "$file" ] || die "File not found: $file"
+# create temporary testfile and make sure it gets deleted
+testfile=$(mktemp /tmp/validate-script.XXXXXX)
+# add the skos definitions to the file
+cat $file $(realpath skosClassAndPropertyDefinitions.ttl) > $testfile
 
 shape=$(realpath "$shape")
 [ -f "$shape" ] || die "File not found: $shape"
 
-grep -vE '^\s*(#.*)?$' "$file" >/dev/null || die "File contains no RDF statements: $file"
+grep -vE '^\s*(#.*)?$' "$file" >/dev/null || die "File contains no RDF statements: $testfile"
 
 if [[ $severity == "warning" ]]; then
     SEVERITY_FILE="$scripts/checkForWarning.rq"
@@ -57,10 +69,9 @@ else
     die "Unknown severity: $severity"
 fi
 
-# create temporary file and make sure it gets deleted
+# create temporary file (will be deleted in cleanup function)
 if [[ -z "${result:-}" ]]; then
     result=$(mktemp /tmp/validate-script.XXXXXX)
-    trap "rm -f -- \"$result\"" 0 2 3 15 
 else
     result=$(realpath "$result")
 fi
@@ -91,7 +102,7 @@ fi
 curl --request POST \
   --url 'http://localhost:3030/dataset/data?graph=default' \
   --header 'Content-Type: text/turtle' \
-  --data-binary @$file > /dev/null
+  --data-binary @$testfile > /dev/null
 
 # validate w/ shacl
 curl --request POST \

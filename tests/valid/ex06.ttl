@@ -7,7 +7,9 @@
 
 skos:Concept a owl:Class . #S1
 skos:ConceptScheme a owl:Class . # S2
-skos:inScheme, skos:hasTopConcept, skos:topConceptOf a owl:ObjectProperty . #S3
+skos:inScheme a owl:ObjectProperty . #S3
+skos:hasTopConcept a owl:ObjectProperty . #S3
+skos:topConceptOf a owl:ObjectProperty . #S3
 skos:inScheme rdfs:range skos:ConceptScheme . #S4
 skos:hasTopConcept rdfs:domain skos:ConceptScheme . #S5
 skos:hasTopConcept rdfs:range skos:Concept . #S6

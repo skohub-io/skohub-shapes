@@ -19,60 +19,9 @@ skos:
     sh:namespace "http://www.w3.org/2004/02/skos/core#"^^xsd:anyURI ;
   ] .
 
-:SkoHub 
-  a sh:PropertyGroup ;
-  rdfs:label "Properties that are SkoHub specific and stricter than SKOS Reference." ;
-  .
-
-:s6
-a sh:PropertyGroup ;
-  rdfs:label "S6: The rdfs:range of skos:hasTopConcept is the class skos:Concept." ;
-  sdo:url "https://www.w3.org/TR/skos-reference/#S6" ;
-  .
-
-
-:s9
- a sh:PropertyGroup ;
-  rdfs:label "S9: skos:ConceptScheme is disjoint with skos:Concept." ;
-  sdo:url "https://www.w3.org/TR/skos-reference/#S9" ;
-  .
-
-
-:s12
-  a sh:PropertyGroup ;
-  rdfs:label "S12: The rdfs:range of each of skos:prefLabel, skos:altLabel and skos:hiddenLabel is the class of RDF plain literals." ;
-  sdo:url "https://www.w3.org/TR/skos-reference/#S12" ;
-  .
-
-:s13
-  a sh:PropertyGroup ;
-  rdfs:label "S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel are pairwise disjoint properties.." ;
-  sdo:url "https://www.w3.org/TR/skos-reference/#S13"
-  .
-
-:s14
-  a sh:PropertyGroup ;
-  rdfs:label "S14: A resource has no more than one value of skos:prefLabel per language tag." ;
-  sdo:url "https://www.w3.org/TR/skos-reference/#S14"
-  .
-
-:s27
-  a sh:PropertyGroup ;
-  rdfs:label "S27: skos:related is disjoint with the property skos:broaderTransitive." ;
-  sdo:url "https://www.w3.org/TR/skos-reference/#S27" ;
-  .
-
-# ConceptScheme
-:ConceptSchemeShape
-  a sh:NodeShape ;
-  sh:targetClass skos:ConceptScheme ;
-  sh:property [
-    sh:path skos:hasTopConcept ;
-    sh:class skos:Concept ;
-    sh:group :s6 ;
-  ] ;
-  .
-
+####################
+# ConceptSchemes
+####################
 :DisjointConceptAndConceptScheme
   a sh:NodeShape ;
   sh:targetClass skos:Concept ;
@@ -85,7 +34,6 @@ a sh:PropertyGroup ;
       $this a skos:ConceptScheme 
     }""" ;
   ] ;
-  sh:group :s9 ;
 .
 
 :DisjointConceptSchemeAndConcept
@@ -100,11 +48,12 @@ a sh:PropertyGroup ;
       $this a skos:Concept
     }""" ;
   ] ;
-  sh:group :s9 ;
 .
 
-# Concept
-:ConceptShape
+###################
+# Lexical Labels
+###################
+:LexicalLabels
   a sh:NodeShape ;
   sh:targetSubjectsOf skos:prefLabel ;
   sh:targetSubjectsOf skos:altLabel ;
@@ -124,6 +73,13 @@ a sh:PropertyGroup ;
     sh:name "alt label" ;
   ] ;
   sh:property [
+    sh:path skos:hiddenLabel ;
+    sh:message "S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel are pairwise disjoint properties." ;
+    sh:disjoint skos:altLabel ;
+    sh:disjoint skos:prefLabel ;
+    sh:name "alt label" ;
+  ] ;
+  sh:property [
     sh:path skos:prefLabel ;
     sh:message "S14: A resource has no more than one value of skos:prefLabel per language tag." ;
     sh:datatype rdf:langString ;
@@ -131,22 +87,13 @@ a sh:PropertyGroup ;
   ] ;
   .
 
-:ConceptSemanticRelations
+######################
+# Semantic Relations
+######################
+:SemanticRelationsS27
   a sh:NodeShape ;
   sh:targetSubjectsOf skos:broader ;
   sh:targetSubjectsOf skos:related ;
-  sh:property [
-    sh:path skos:broader ;
-    sh:class skos:Concept ;
-    sh:name "broader" ;
-    sh:nodeKind sh:IRI ;
-  ] ;
-  sh:property [
-    sh:path skos:narrower ;
-    sh:class skos:Concept ;
-    sh:name "narrower" ;
-    sh:nodeKind sh:IRI ;
-  ] ;
   sh:property [
     sh:path skos:related ;
     sh:message "S27: skos:related is disjoint with the property skos:broaderTransitive." ;
@@ -154,247 +101,30 @@ a sh:PropertyGroup ;
     sh:disjoint skos:broaderTransitive ;
     sh:disjoint skos:narrower ;
     sh:disjoint skos:narrowerTransitive ;
-    sh:name "related" ;
-    sh:group :s27 ;
-  ] ;
-  sh:property [
-    sh:path skos:topConceptOf ;
-    sh:class skos:ConceptScheme ;
-    sh:name "top concept of" ;
-    sh:nodeKind sh:IRI ;
   ] ;
   .
 
-:AmbiguousNotatation
+:SemanticRelationsS19S20
   a sh:NodeShape ;
-  sh:severity sh:Warning ;
-  sh:targetClass skos:Concept ;
-  sh:sparql [
-    a sh:SPARQLConstraint ;
-    sh:prefixes skos: ;
-    rdfs:comment "Ambiguous Notation References" ;
-    sh:description "Concepts should not have identlical skos:notation literals." ;
-    sh:message "the concept has the same notation {$value} as {$path}" ;
-    sh:select """
-    SELECT $this (?other as ?path) ?value
-    WHERE {
-      $this skos:notation ?value  .
-      ?other skos:notation ?value .
-      FILTER ($this != ?other)
-    }""" ;
-  ] ;
-.
-
-# I changed the query here, added skos:topConceptOf
-:DuplicateNotatationWithinCS
-  a sh:NodeShape ;
-  sh:severity sh:Warning ;
-  sh:targetClass skos:Concept ;
-  sh:sparql [
-    sh:prefixes skos: ;
-    rdfs:comment "Duplicate Notation References within Concept Scheme" ;
-    sh:description "Concepts within the same Concept Scheme should not have identlical skos:notation literals." ;
-    sh:message "the concept has the same notation {$value} as {$path}" ;
-    sh:select """
-    SELECT $this (?other as ?path) ?value
-    WHERE {
-      $this skos:notation ?value  .
-      ?other skos:notation ?value .
-      $this skos:inScheme | skos:topConceptOf ?cs .
-      ?other skos:inScheme | skos:topConceptOf ?cs .
-      FILTER ($this != ?other)
-    }""" ;
-  ] ;
-.
-
-# I changed this query have to add again the replace part (TODO)
-:EmptyLabels
-  a sh:NodeShape ;
-  sh:targetClass skos:Concept ;
-  sh:severity sh:Warning ;
-  rdfs:comment "Empty Labels" ;
-  sh:description "Labels also need to contain textual information to be useful, thus we find all SKOS labels with length 0 (after removing whitespaces)." ;
-  sh:message "Label with an empty value detected" ;
-  sh:sparql [
-    a sh:SPARQLConstraint ;
-    sh:prefixes skos: ;
-    sh:select """
-    SELECT $this ?path (?lab as ?value) (lang(?lab) as ?lang)
-    WHERE {
-      $this a skos:Concept .
-      {
-      SELECT $this ?path ?lab 
-      WHERE{
-        $this skos:prefLabel | skos:altLabel | skos:hiddenLabel ?lab .
-        $this ?path ?lab .
-        bind ( strlen(?lab) as ?q)
-        FILTER ( ?q=0 )
-        }
-      }
-    }""" ;
-  ] ;
-.
-
-# changed ?this to $this
-# changed sh:message to provide more meaning
-:OverlappingLabels
-  a sh:NodeShape ;
-  sh:deactivated true ; 
-  sh:targetClass skos:Concept ;
-  sh:severity sh:Warning ;
-  sh:sparql [
-    a sh:SPARQLConstraint ;
-    sh:prefixes skos: ;
-    rdfs:comment "Overlapping Labels (concepts with the same label, independent of concept scheme )" ;
-    sh:description "This is a generalization of a recommendation in the SKOS primer, that “no two concepts have the same preferred lexical label in a given language when they belong to the same concept scheme”. This could indicate missing disambiguation information and thus lead to problems in autocompletion application." ;
-    sh:message "Overlapping Labels (there is concept '{$this}' with the same pref label in language '{$lang}' for concept '{$value}')" ;
-    sh:select """
-    SELECT $this (skos:prefLabel AS ?path) (?other as ?value) (lang(?pl) as ?lang)
-    WHERE {
-      ?this  skos:prefLabel ?pl .
-      ?other skos:prefLabel ?opl .
-      ?other a skos:Concept .
-      FILTER ($this != ?other && ?pl = ?opl)
-    }""" ;
-  ] ;
-.
-
-# added | skos:topConceptOf in SPARQL query
-# changed sh:message to provide more meaning
-:OverlappingLabelsInSameConceptScheme
-  a sh:NodeShape ;
-  sh:targetClass skos:Concept ;
-  sh:severity sh:Warning ;
-  sh:sparql [
-    sh:prefixes skos: ;
-    rdfs:comment "Overlapping Labels in the same Concept Scheme (concepts with the same label in the same concept scheme)" ;
-    sh:message "Overlapping Labels in the same Concept Scheme (there is concept '{$this}' with the same pref label in language '{$lang}' for concept '{$value}'). Label: '{$pl}" ;
-    sh:select """
-    SELECT $this (skos:prefLabel AS ?path) (?other as ?value) (lang(?pl) as ?lang) $pl
-    WHERE {
-      ?this  skos:prefLabel ?pl .
-      ?other skos:prefLabel ?opl .
-      ?other a skos:Concept .
-      ?this skos:inScheme | skos:topConceptOf ?cs .
-      ?other skos:inScheme | skos:topConceptOf ?cs .
-      FILTER ($this != ?other && ?pl = ?opl)
-    }""" ;
-  ] ;
-.
-
-:TopConceptsHavingBroader
-  a sh:NodeShape ;
-  sh:targetClass skos:Concept ;
-  sh:severity sh:Warning ;
-  sh:sparql [
-    a sh:SPARQLConstraint ;
-    sh:prefixes skos: ;
-    rdfs:comment "Top Concept Having Broader Concept" ;
-    sh:message "The top concept has a broader concept" ;
-    sh:select """
-    SELECT DISTINCT $this
-    WHERE {
-      $this skos:broader | skos:broaderTransitive ?other .
-      ?this skos:topConceptOf ?cs .
-    }""" ;
-  ] ;
-.
-
-:UndocumentedConcepts
-  a sh:NodeShape ;
-  sh:deactivated true ;
-  sh:targetClass skos:Concept ;
-  sh:severity sh:Warning ;
-  sh:sparql [
-    a sh:SPARQLConstraint ;
-    sh:prefixes skos: ;
-    rdfs:label "Undocumented Concept (no concept meaning description)" ;
-    sh:description """The SKOS \"standard\" defines a number of properties useful for documenting the meaning of the concepts in a thesaurus (section 7) also in a human-readable form. Intense use of these properties leads to a well-documented thesaurus which should also improve its quality. 
-      Iteration over all concepts in the vocabulary and find those not using one of skos:note, skos:changeNote, skos:definition, skos:editorialNote, skos:example, skos:historyNote, or skos:scopeNote""" ;
-    sh:message "undocumented concept - none of the skos:notes is used to describe the meaning " ;
-    sh:select """
-    SELECT DISTINCT $this
-    WHERE {
-        $this a skos:Concept .
-        FILTER NOT EXISTS {?this skos:definition|skos:note|skos:example|skos:historyNote|skos:scopeNote ?note}
-    }""" ;
-  ] ;
-.
-
-
-:DisjointMappingRelations
-  a sh:NodeShape ;
-  sh:property [
-      sh:path skos:exactMatch ;
-      sh:message "S46: skos:exactMatch is disjoint with each of the properties skos:broadMatch and skos:relatedMatch." ;
-      sh:disjoint skos:broadMatch ;
-      sh:disjoint skos:relatedMatch ;
-      sh:disjoint skos:narrowMatch ; #since broadMatch and narrowMatch are inverses
-    ];
-  sh:property [
-    sh:path skos:relatedMatch ;
-    sh:class skos:Concept ;
-    sh:name "related match" ;
-    sh:nodeKind sh:IRI ;
-  ] ;
-  sh:targetObjectsOf skos:broadMatch ;
-  sh:targetObjectsOf skos:closeMatch ;
-  sh:targetObjectsOf skos:exactMatch ;
-  sh:targetObjectsOf skos:narrowMatch ;
-  sh:targetObjectsOf skos:relatedMatch ;
-  sh:targetSubjectsOf skos:broadMatch ;
-  sh:targetSubjectsOf skos:closeMatch ;
-  sh:targetSubjectsOf skos:exactMatch ;
-  sh:targetSubjectsOf skos:narrowMatch ;
-  sh:targetSubjectsOf skos:relatedMatch ;
-.
-
-:SemanticRelations
-  rdf:type rdfs:Class ;
-  rdf:type sh:Shape ;
-  rdfs:comment "Semantic relations" ;
-  rdfs:label "Semantic relations" ;
-  rdfs:subClassOf rdfs:Resource ;
-  owl:versionInfo "EuVoc 1.1" ;
-  sh:sparql [
-    rdfs:comment "9.6.4. SKOS Concepts, Concept Collections and Semantic Relations" ;
-    sh:message "S19/S20: domain and range of SKOS semantic propoerties MUST be a skos:Concept . " ;
-    sh:select """
-    SELECT $this
-    WHERE {
-      FILTER NOT EXISTS{ $this a skos:Concept .}
-    }""" ;
-  ] ;
   sh:targetObjectsOf skos:broader ;
   sh:targetObjectsOf skos:narrower ;
   sh:targetObjectsOf skos:related ;
   sh:targetSubjectsOf skos:broader ;
   sh:targetSubjectsOf skos:narrower ;
   sh:targetSubjectsOf skos:related ;
-.
-
-# SKOS Collections
-
-skos:Collection
-  rdf:type sh:NodeShape ;
   sh:sparql [
-    sh:message "S19: The domain of semantic properties cannot be skos:Collection" ;
+    sh:message "S19/S20: domain and range of SKOS semantic relations is the class skos:Concept. " ;
     sh:select """
     SELECT $this
     WHERE {
-      ?this skos:broader | skos:narrower | skos:related ?c .
-    }""" ;
-  ] ;
-  sh:sparql [
-    sh:message "S20: The range of semantic properties cannot be skos:Collection" ;
-    sh:select """
-    SELECT $this
-    WHERE {
-        ?c skos:broader | skos:narrower | skos:related ?this .
+      FILTER NOT EXISTS { $this a skos:Concept .}
     }""" ;
   ] ;
 .
 
+######################
+# Concept Collections
+######################
 :DisjointConceptAndCollection
   a sh:NodeShape ;
   sh:targetSubjectsOf skos:narrower ;
@@ -425,3 +155,54 @@ skos:Collection
     }""" ;
   ] ;
 .
+
+skos:Collection
+  a sh:NodeShape ;
+  sh:sparql [
+    sh:message "S19: The domain of semantic properties cannot be skos:Collection" ;
+    sh:select """
+    SELECT $this
+    WHERE {
+      ?this skos:broader | skos:narrower | skos:related ?c .
+    }""" ;
+  ] ;
+  sh:sparql [
+    sh:message "S20: The range of semantic properties cannot be skos:Collection" ;
+    sh:select """
+    SELECT $this
+    WHERE {
+        ?c skos:broader | skos:narrower | skos:related ?this .
+    }""" ;
+  ] ;
+.
+
+#############################
+# Mapping Properties
+#############################
+:DisjointMappingRelations
+  a sh:NodeShape ;
+  sh:property [
+      sh:path skos:exactMatch ;
+      sh:message "S46: skos:exactMatch is disjoint with each of the properties skos:broadMatch and skos:relatedMatch." ;
+      sh:disjoint skos:broadMatch ;
+      sh:disjoint skos:relatedMatch ;
+      sh:disjoint skos:narrowMatch ; #since broadMatch and narrowMatch are inverses
+    ];
+  sh:property [
+    sh:path skos:relatedMatch ;
+    sh:class skos:Concept ;
+    sh:name "related match" ;
+    sh:nodeKind sh:IRI ;
+  ] ;
+  sh:targetObjectsOf skos:broadMatch ;
+  sh:targetObjectsOf skos:closeMatch ;
+  sh:targetObjectsOf skos:exactMatch ;
+  sh:targetObjectsOf skos:narrowMatch ;
+  sh:targetObjectsOf skos:relatedMatch ;
+  sh:targetSubjectsOf skos:broadMatch ;
+  sh:targetSubjectsOf skos:closeMatch ;
+  sh:targetSubjectsOf skos:exactMatch ;
+  sh:targetSubjectsOf skos:narrowMatch ;
+  sh:targetSubjectsOf skos:relatedMatch ;
+.
+

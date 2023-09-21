@@ -1,33 +1,10 @@
-@prefix dct: <http://purl.org/dc/terms/>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#>.
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-skos:Concept a owl:Class . # S2
-skos:ConceptScheme a owl:Class . # S2
-skos:inScheme a owl:ObjectProperty . #S3
-skos:hasTopConcept a owl:ObjectProperty . #S3
-skos:topConceptOf a owl:ObjectProperty . #S3
-skos:inScheme rdfs:range skos:ConceptScheme . #S4
-skos:hasTopConcept rdfs:domain skos:ConceptScheme . #S5
-skos:hasTopConcept rdfs:range skos:Concept . #S6
-skos:topConceptOf rdfs:subPropertyOf skos:inScheme . #S7
-skos:topConceptOf owl:inverseOf skos:hasTopConcept . #S8
-skos:prefLabel a owl:AnnotationProperty ; #S10
-  rdfs:subPropertyOf rdfs:label ; #S11
-  rdfs:range rdfs:Literal . #S12
-
-skos:altLabel a owl:AnnotationProperty ; #S10
-  rdfs:subPropertyOf rdfs:label ; #S11
-  rdfs:range rdfs:Literal . #S12
-
-skos:hiddenLabel a owl:AnnotationProperty ; #S10
-  rdfs:subPropertyOf rdfs:label ; #S11
-  rdfs:range rdfs:Literal . #S12
-
- <AnotherResource>
+<AnotherResource>
   skos:prefLabel "東"@ja-Hani ;
   skos:prefLabel "ひがし"@ja-Hira ;
   skos:altLabel "あずま"@ja-Hira ;

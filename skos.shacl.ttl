@@ -63,21 +63,18 @@ skos:
     sh:message "S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel are pairwise disjoint properties." ;
     sh:disjoint skos:altLabel ;
     sh:disjoint skos:hiddenLabel ;
-    sh:name "pref label" ;
   ] ;
   sh:property [
     sh:path skos:altLabel ;
     sh:message "S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel are pairwise disjoint properties." ;
     sh:disjoint skos:hiddenLabel ;
     sh:disjoint skos:prefLabel ;
-    sh:name "alt label" ;
   ] ;
   sh:property [
     sh:path skos:hiddenLabel ;
     sh:message "S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel are pairwise disjoint properties." ;
     sh:disjoint skos:altLabel ;
     sh:disjoint skos:prefLabel ;
-    sh:name "alt label" ;
   ] ;
   sh:property [
     sh:path skos:prefLabel ;
@@ -152,26 +149,6 @@ skos:
     SELECT $this
     WHERE {
       $this a skos:Collection
-    }""" ;
-  ] ;
-.
-
-skos:Collection
-  a sh:NodeShape ;
-  sh:sparql [
-    sh:message "S19: The domain of semantic properties cannot be skos:Collection" ;
-    sh:select """
-    SELECT $this
-    WHERE {
-      ?this skos:broader | skos:narrower | skos:related ?c .
-    }""" ;
-  ] ;
-  sh:sparql [
-    sh:message "S20: The range of semantic properties cannot be skos:Collection" ;
-    sh:select """
-    SELECT $this
-    WHERE {
-        ?c skos:broader | skos:narrower | skos:related ?this .
     }""" ;
   ] ;
 .

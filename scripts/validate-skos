@@ -81,20 +81,24 @@ else
     result=$(realpath "$result")
 fi
 
-# start fuseki
-docker run -d --rm --name fuseki -p 3030:3030 -v $(pwd)/fuseki/config_inference.ttl:/fuseki/config_inference.ttl skohub/jena-fuseki:latest /jena-fuseki/fuseki-server --config /fuseki/config_inference.ttl > /dev/null
+# Check if the container is running
+if docker ps | grep -q "fuseki"; then
+  docker stop fuseki
+  sleep 1
+fi
 
-sleep 3
 # wait till fuseki is up
 max_attempts=5
-delay=4
+delay=3
 attempt=1
 
 while [ $attempt -le $max_attempts ]; do
+  # start fuseki
+  docker run -d --rm --name fuseki -p 3030:3030 -v $(pwd)/fuseki/config_inference.ttl:/fuseki/config_inference.ttl skohub/jena-fuseki:latest /jena-fuseki/fuseki-server --config /fuseki/config_inference.ttl > /dev/null
   # echo "Attempt $attempt/$max_attempts"
+  sleep $delay
   curl 'http://localhost:3030/$/ping' > /dev/null && break 
   # echo "Failed. Fuseki not yet there. Retrying in $delay seconds..."
-  sleep $delay
   attempt=$((attempt + 1))
 done
 
@@ -116,12 +120,9 @@ curl --request POST \
   --data-binary @$shape > "$result" 
 
 if [[ "$report" -eq 1 ]]; then
-  docker container stop fuseki
   cat "$result"
 else
   validationResult="$(docker run --rm -v $SEVERITY_FILE:/rdf/checkForViolation.rq --mount type=bind,source=$result,target=/rdf/result.ttl skohub/jena:4.6.1 arq --data /rdf/result.ttl --query /rdf/checkForViolation.rq)"
-
-  docker container stop fuseki > /dev/null
 
   lines=$(echo "$validationResult" | wc -l )
 

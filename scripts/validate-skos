@@ -51,11 +51,16 @@ file=$(realpath "$1")
 [ -f "$file" ] || die "File not found: $file"
 # create temporary testfile and make sure it gets deleted
 testfile=$(mktemp /tmp/validate-script.XXXXXX)
-# add the skos definitions to the file
-cat $file $(realpath skosClassAndPropertyDefinitions.ttl) > $testfile
+
 
 shape=$(realpath "$shape")
 [ -f "$shape" ] || die "File not found: $shape"
+# add the skos definitions to the file if the shape is "skos.shacl.ttl"
+if [ "$(basename $shape)" = "skos.shacl.ttl" ]; then
+  cat $file $(realpath skosClassAndPropertyDefinitions.ttl) > $testfile
+else
+  cat $file > $testfile
+fi
 
 grep -vE '^\s*(#.*)?$' "$file" >/dev/null || die "File contains no RDF statements: $testfile"
 

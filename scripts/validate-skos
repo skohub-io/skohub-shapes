@@ -27,7 +27,7 @@ die() {
 cleanup() {
     rm -f -- $testfile
     rm -f -- $result
-    docker container stop fuseki > /dev/null
+    docker container stop validate-skos-fuseki > /dev/null
 }
 
 trap cleanup 0 2 3 15 
@@ -82,8 +82,8 @@ else
 fi
 
 # Check if the container is running
-if docker ps | grep -q "fuseki"; then
-  docker stop fuseki
+if docker ps | grep -q "validate-skos-fuseki"; then
+  docker stop validate-skos-fuseki
   sleep 1
 fi
 
@@ -94,11 +94,10 @@ attempt=1
 
 while [ $attempt -le $max_attempts ]; do
   # start fuseki
-  docker run -d --rm --name fuseki -p 3030:3030 -v $(pwd)/fuseki/config_inference.ttl:/fuseki/config_inference.ttl skohub/jena-fuseki:latest /jena-fuseki/fuseki-server --config /fuseki/config_inference.ttl > /dev/null
-  # echo "Attempt $attempt/$max_attempts"
+  docker run -d --rm --name validate-skos-fuseki -p 0:3030 -v $(pwd)/fuseki/config_inference.ttl:/fuseki/config_inference.ttl skohub/jena-fuseki:latest /jena-fuseki/fuseki-server --config /fuseki/config_inference.ttl > /dev/null
+  port=$(docker port validate-skos-fuseki 3030/tcp | head -1 | awk -F: '{print $2}')
   sleep $delay
-  curl 'http://localhost:3030/$/ping' > /dev/null && break 
-  # echo "Failed. Fuseki not yet there. Retrying in $delay seconds..."
+  curl "http://localhost:$port/$/ping" > /dev/null && break 
   attempt=$((attempt + 1))
 done
 
@@ -109,13 +108,13 @@ fi
 
 # upload file
 curl --request POST \
-  --url 'http://localhost:3030/dataset/data?graph=default' \
+  --url 'http://localhost:$port/dataset/data?graph=default' \
   --header 'Content-Type: text/turtle' \
   --data-binary @$testfile > /dev/null
 
 # validate w/ shacl
 curl --request POST \
-  --url 'http://localhost:3030/dataset/shacl?graph=default' \
+  --url 'http://localhost:$port/dataset/shacl?graph=default' \
   --header 'Content-Type: text/turtle' \
   --data-binary @$shape > "$result" 
 

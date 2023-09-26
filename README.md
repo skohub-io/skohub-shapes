@@ -27,6 +27,14 @@ To validate with the help of a docker container, you can run the script `scripts
 
 Call with `-h` or without arguments to list options.
 
+## Checked Constraints
+
+All class and property definitions from the [SKOS reference](https://www.w3.org/TR/skos-reference/) are added in the test files.
+All valid and invalid consistency examples are added to the test files.
+
+Integrity conditions are checked by the `skos.shacl.ttl` shape.
+
+
 ## Tests
 
 There is some basis test functionality provided to test the shape.

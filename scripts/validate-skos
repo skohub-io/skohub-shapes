@@ -24,6 +24,14 @@ die() {
     exit 1
 }
 
+cleanup() {
+    rm -f -- $testfile
+    rm -f -- $result
+    docker container stop validate-skos-fuseki > /dev/null
+}
+
+trap cleanup 0 2 3 15 
+
 while getopts s:l:o:rh flag
 do
     case "${flag}" in
@@ -41,11 +49,20 @@ shift $(($OPTIND - 1))
 
 file=$(realpath "$1")
 [ -f "$file" ] || die "File not found: $file"
+# create temporary testfile and make sure it gets deleted
+testfile=$(mktemp /tmp/validate-script.XXXXXX)
+
 
 shape=$(realpath "$shape")
 [ -f "$shape" ] || die "File not found: $shape"
+# add the skos definitions to the file if the shape is "skos.shacl.ttl"
+if [ "$(basename $shape)" = "skos.shacl.ttl" ]; then
+  cat $file $(realpath skosClassAndPropertyDefinitions.ttl) > $testfile
+else
+  cat $file > $testfile
+fi
 
-grep -vE '^\s*(#.*)?$' "$file" >/dev/null || die "File contains no RDF statements: $file"
+grep -vE '^\s*(#.*)?$' "$file" >/dev/null || die "File contains no RDF statements: $testfile"
 
 if [[ $severity == "warning" ]]; then
     SEVERITY_FILE="$scripts/checkForWarning.rq"
@@ -57,15 +74,49 @@ else
     die "Unknown severity: $severity"
 fi
 
-# create temporary file and make sure it gets deleted
+# create temporary file (will be deleted in cleanup function)
 if [[ -z "${result:-}" ]]; then
     result=$(mktemp /tmp/validate-script.XXXXXX)
-    trap "rm -f -- \"$result\"" 0 2 3 15 
 else
     result=$(realpath "$result")
 fi
 
-docker run --rm -v "$shape:/rdf/shape.ttl" -v "$file:/rdf/file.ttl" skohub/jena:4.6.1 shacl v -s /rdf/shape.ttl -d /rdf/file.ttl > "$result"
+# Check if the container is running
+if docker ps | grep -q "validate-skos-fuseki"; then
+  docker stop validate-skos-fuseki
+  sleep 1
+fi
+
+# wait till fuseki is up
+max_attempts=5
+delay=3
+attempt=1
+
+while [ $attempt -le $max_attempts ]; do
+  # start fuseki
+  docker run -d --rm --name validate-skos-fuseki -p 0:3030 -v $(pwd)/fuseki/config_inference.ttl:/fuseki/config_inference.ttl skohub/jena-fuseki:latest /jena-fuseki/fuseki-server --config /fuseki/config_inference.ttl > /dev/null
+  port=$(docker port validate-skos-fuseki 3030/tcp | head -1 | awk -F: '{print $2}')
+  sleep $delay
+  curl "http://localhost:$port/$/ping" > /dev/null && break 
+  attempt=$((attempt + 1))
+done
+
+if [ $attempt -gt $max_attempts ]; then
+  echo "The command has failed after $max_attempts attempts."
+  exit 1
+fi
+
+# upload file
+curl --request POST \
+  --url 'http://localhost:$port/dataset/data?graph=default' \
+  --header 'Content-Type: text/turtle' \
+  --data-binary @$testfile > /dev/null
+
+# validate w/ shacl
+curl --request POST \
+  --url 'http://localhost:$port/dataset/shacl?graph=default' \
+  --header 'Content-Type: text/turtle' \
+  --data-binary @$shape > "$result" 
 
 if [[ "$report" -eq 1 ]]; then
   cat "$result"

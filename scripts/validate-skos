@@ -108,13 +108,13 @@ fi
 
 # upload file
 curl --request POST \
-  --url 'http://localhost:$port/dataset/data?graph=default' \
+  --url "http://localhost:$port/dataset/data?graph=default" \
   --header 'Content-Type: text/turtle' \
   --data-binary @$testfile > /dev/null
 
 # validate w/ shacl
 curl --request POST \
-  --url 'http://localhost:$port/dataset/shacl?graph=default' \
+  --url "http://localhost:$port/dataset/shacl?graph=default" \
   --header 'Content-Type: text/turtle' \
   --data-binary @$shape > "$result" 
 

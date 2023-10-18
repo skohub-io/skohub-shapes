@@ -1,7 +1,7 @@
 #!/bin/bash
 error=false
 # for files in tests/valid no output should be given
-FILES="$(pwd)/tests/valid/*"
+FILES="$(pwd)/tests/valid/skos.shacl.ttl/*"
 for f in $FILES
 do
   echo "Processing $f ..."
@@ -11,7 +11,7 @@ do
 done
 
 # for files in tests/invalid output should be received
-FILES="$(pwd)/tests/invalid/*"
+FILES="$(pwd)/tests/invalid/skos.shacl.ttl/*"
 for f in $FILES
 do
   echo "Processing $f ..."

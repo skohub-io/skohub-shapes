@@ -127,15 +127,15 @@
   ] ;
   sh:property [ 
     sh:class skos:Concept ;
+    sh:path skos:narrowerTransitive ;
     sh:severity sh:Violation ;
     sh:message "Target class of skos:narrowerTransitive should be a skos:Concept" ;
-    sh:path skos:narrowerTransitive ;
   ] ;
   sh:property [
     sh:path skos:narrowMatch ;
     sh:nodeKind sh:IRI ;
     sh:severity sh:Violation ;
-    sh:message "Target class of skos:narrowMatch should be a skos:Concept" ;
+    sh:message "Target class of skos:narrowMatch should be a skos:Concept (IRI)" ;
   ] ;
   sh:property [
     sh:path skos:broader ;
@@ -165,19 +165,19 @@
     sh:path skos:relatedMatch ;
     sh:nodeKind sh:IRI ;
     sh:severity sh:Violation ;
-    sh:message "Target class of skos:relatedMatch should be a skos:Concept" ;
+    sh:message "Target class of skos:relatedMatch should be a skos:Concept (IRI)" ;
   ] ;
   sh:property [
     sh:path skos:closeMatch ;
     sh:nodeKind sh:IRI ;
     sh:severity sh:Violation ;
-    sh:message "Target class of skos:closeMatch should be a skos:Concept" ;
+    sh:message "Target class of skos:closeMatch should be a skos:Concept (IRI)" ;
   ] ;
   sh:property [
     sh:path skos:exactMatch ;
     sh:nodeKind sh:IRI ;
     sh:severity sh:Violation ;
-    sh:message "Target class of skos:exactMatch should be a skos:Concept" ;
+    sh:message "Target class of skos:exactMatch should be a skos:Concept (IRI)" ;
   ] ;
   sh:property [
     sh:path skos:inScheme ;
@@ -212,7 +212,7 @@
   ] ;
   sh:property [
     sh:path skos:member ;
-    sh:class: skos:Concept ;
+    sh:class skos:Concept ;
     sh:severity sh:Violation ;
     sh:message "The object of skos:member should be a skos:Concept" ;
   ]

@@ -20,6 +20,24 @@ do
   if test $? -eq 0; then echo "Error: $f should be invalid, but is valid"; error=true; fi
 done
 
+FILES="$(pwd)/tests/valid/skohub.shacl.ttl/*"
+for f in $FILES
+do
+  echo "Processing $f ..."
+  # take action on each file. $f store current file name
+  scripts/validate-skos -s skohub.shacl.ttl -l all "$f" 2>/dev/null
+  if test $? -eq 1; then echo "Error: $f should be valid, but is invalid"; error=true; fi;
+done
+
+FILES="$(pwd)/tests/invalid/skohub.shacl.ttl/*"
+for f in $FILES
+do
+  echo "Processing $f ..."
+  # validate with script and log error messages to dev null
+  scripts/validate-skos -s skohub.shacl.ttl -l all "$f" 2>/dev/null
+  if test $? -eq 0; then echo "Error: $f should be invalid, but is valid"; error=true; fi
+done
+
 if test "$error" = true; 
 then 
   echo "There were errors in your tests!"

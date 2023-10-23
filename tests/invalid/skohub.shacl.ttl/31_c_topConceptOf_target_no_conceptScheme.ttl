@@ -11,7 +11,7 @@
   dct:publisher <https://oerworldmap.org/resource/urn:uuid:fd06253e-fe67-4910-b923-51db9d27e59f> ;
   dct:license <http://creativecommons.org/licenses/by/4.0/> ;
   vann:preferredNamespaceUri "https://w3id.org/test" ;
-  skos:hasTopConcept  <collection> .
+  skos:hasTopConcept  <c1> .
 
 <c1> a skos:Concept ;
   skos:prefLabel "Konzept 1"@de, "Concept 1"@en ;
@@ -23,7 +23,7 @@
   skos:note "Meine Anmerkung"@de ;
   skos:narrower <c2> ;
   skos:notation "1", "notation" ;
-  skos:topConceptOf <> .
+  skos:topConceptOf <c2> .
 
 <c2> a skos:Concept ;
   skos:prefLabel "Konzept 2"@de, "Concept 2"@en ;

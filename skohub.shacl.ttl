@@ -45,7 +45,7 @@
     sh:datatype rdf:langString ;
     sh:severity sh:Warning ;
     sh:minCount 1 ;
-    sh:message: "A description of the Concept Scheme should be provided."
+    sh:message: "A description of the Concept Scheme should be provided." ;
     rdfs:comment "Tested with 04_cs_no_description.ttl" ;
     rdfs:comment "Tested with 05_cs_description_no_langstring.ttl" ;
   ] ;
@@ -63,7 +63,7 @@
     sh:minCount 1 ;
     sh:datatype xsd:string ;
     sh:severity sh:Warning ;
-    sh:message "A preferred Namespace URI should be given as a string, especially if you want to use your vocabulary in reconciliation services."
+    sh:message "A preferred Namespace URI should be given as a string, especially if you want to use your vocabulary in reconciliation services." ;
     rdfs:comment "Tested with 08_cs_no_prefNamespaceUri.ttl" ;
     rdfs:comment "Tested with 09_cs_prefNamespace_wrong_datatype.ttl" ;
   ] ;

@@ -186,10 +186,10 @@
     sh:message "Target class of skos:inScheme should be a skos:ConceptScheme" ;
   ] ;
   sh:property [
-    sh:path skos:hasTopConcept ;
+    sh:path skos:topConceptOf ;
     sh:class skos:ConceptScheme ;
     sh:severity sh:Violation ;
-    sh:message "Target class of skos:hasTopConcept should be a skos:ConceptScheme" ;
+    sh:message "Target class of skos:topConceptOf should be a skos:ConceptScheme" ;
   ] ;
   .
 

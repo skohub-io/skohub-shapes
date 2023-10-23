@@ -135,7 +135,7 @@
     sh:path skos:narrowMatch ;
     sh:nodeKind sh:IRI ;
     sh:severity sh:Violation ;
-    sh:message "Target class of skos:narrowMatch should be a skos:Concept (IRI)" ;
+    sh:message "Target class of skos:narrowMatch should be a URI ;
   ] ;
   sh:property [
     sh:path skos:broader ;

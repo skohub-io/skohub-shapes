@@ -171,7 +171,7 @@
     sh:path skos:closeMatch ;
     sh:nodeKind sh:IRI ;
     sh:severity sh:Violation ;
-    sh:message "Target class of skos:closeMatch should be a skos:Concept (IRI)" ;
+    sh:message "Target class of skos:closeMatch should be a URI" ;
   ] ;
   sh:property [
     sh:path skos:exactMatch ;

@@ -153,7 +153,7 @@
     sh:path skos:broadMatch ;
     sh:nodeKind sh:IRI ;
     sh:severity sh:Violation ;
-    sh:message "Target class of skos:broadMatch should be a skos:Concept" ;
+    sh:message "Target class of skos:broadMatch should be a URI" ;
   ] ;
   sh:property [
     sh:path skos:related ;

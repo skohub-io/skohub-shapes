@@ -68,7 +68,7 @@
     sh:datatype rdf:langString ;
     sh:uniqueLang true ;
     sh:message "Each skos:Concept has to provide a skos:prefLabel in a unique language" ;
-    sh:severity: sh:Warning ;
+    sh:severity: sh:Violation ;
   ] ;
   sh:property [
     sh:path skos:prefLabel ;

@@ -106,6 +106,9 @@ if [ $attempt -gt $max_attempts ]; then
   exit 1
 fi
 
+riotResult="$(docker run --rm -v $testfile:/rdf/testfile.ttl skohub/jena:4.6.1 riot --validate /rdf/testfile.ttl)"
+echo $?
+
 # upload file
 curl --request POST \
   --url "http://localhost:$port/dataset/data?graph=default" \

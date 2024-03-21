@@ -27,6 +27,64 @@ To validate with the help of a docker container, you can run the script `scripts
 
 Call with `-h` or without arguments to list options.
 
+## Add Validation in a vocabulary repository
+
+Adding the following GitHub Action to a repository (add a `.github/workflows/main.yaml` file), will validate your vocabulary against the [SkoHub Shape](./skohub.shacl.ttl).
+Notice though that you will also get an error shown for warnings.
+That is because GitHub Actions either pass or fail.
+If you know an approach on how to just output a failing action as a warning, please let us know.
+
+```yaml
+name: Validate TTL Files
+
+on: [push]
+
+jobs:
+  check-for-warnings:
+    name: Check for Warnings
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Check for Warnings
+      run: |
+        curl -s https://raw.githubusercontent.com/skohub-io/shapes/main/scripts/checkForWarning.rq >> checkForWarning.rq
+        find . -type f -name '*.ttl' | while read file; do
+          # Adjust the file path to remove the './' part
+          adjusted_file_path=$(echo "$file" | sed 's|^./||')
+          echo "Processing $adjusted_file_path with Docker..."
+          docker run --rm -v "$(pwd)/$adjusted_file_path:/rdf/test.ttl" skohub/jena:4.6.1 shacl validate --shapes https://raw.githubusercontent.com/skohub-io/shapes/main/skohub.shacl.ttl --data /rdf/test.ttl >> result.ttl
+          validation_result="$(docker run --rm --mount type=bind,source=./checkForWarning.rq,target=/rdf/checkForViolation.rq --mount type=bind,source=./result.ttl,target=/rdf/result.ttl skohub/jena:4.6.1 arq --data /rdf/result.ttl --query /rdf/checkForViolation.rq)"
+          echo $validation_result
+          lines=$(echo "$validation_result" | wc -l )
+          # Correct validation has 4 lines of output
+          [[ ${lines} -eq 4 ]] || exit 1
+        done
+
+  check-for-errors:
+    name: Check for Errors
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Check for Errors
+      run: |
+        curl -s https://raw.githubusercontent.com/skohub-io/shapes/main/scripts/checkForViolation.rq >> checkForViolation.rq
+        find . -type f -name '*.ttl' | while read file; do
+          # Adjust the file path to remove the './' part
+          adjusted_file_path=$(echo "$file" | sed 's|^./||')
+          echo "Processing $adjusted_file_path with Docker..."
+          docker run --rm -v "$(pwd)/$adjusted_file_path:/rdf/test.ttl" skohub/jena:4.6.1 shacl validate --shapes https://raw.githubusercontent.com/skohub-io/shapes/main/skohub.shacl.ttl --data /rdf/test.ttl >> result.ttl
+          validation_result="$(docker run --rm --mount type=bind,source=./checkForViolation.rq,target=/rdf/checkForViolation.rq --mount type=bind,source=./result.ttl,target=/rdf/result.ttl skohub/jena:4.6.1 arq --data /rdf/result.ttl --query /rdf/checkForViolation.rq)"
+          echo $validation_result
+          lines=$(echo "$validation_result" | wc -l )
+          # Correct validation has 4 lines of output
+          [[ ${lines} -eq 4 ]] || exit 1
+        done
+```
+
 ## Checked Constraints
 
 All class and property definitions from the [SKOS reference](https://www.w3.org/TR/skos-reference/) are added in the test files.

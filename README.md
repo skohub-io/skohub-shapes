@@ -30,9 +30,8 @@ Call with `-h` or without arguments to list options.
 ## Add Validation in a vocabulary repository
 
 Adding the following GitHub Action to a repository (add a `.github/workflows/main.yaml` file), will validate your vocabulary against the [SkoHub Shape](./skohub.shacl.ttl).
-Notice though that you will also get an error shown for warnings.
-That is because GitHub Actions either pass or fail.
-If you know an approach on how to just output a failing action as a warning, please let us know.
+Notice that, when the action is triggered, you will get an error shown in GitHub not only for violations but also for warnings. That is because GitHub Actions either pass or fail.
+
 
 ```yaml
 name: Validate TTL Files

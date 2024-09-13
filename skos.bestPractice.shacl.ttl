@@ -89,7 +89,7 @@
   ] ;
 .
 
-:AmbiguousNotatation
+:AmbiguousNotation
   a sh:NodeShape ;
   sh:severity sh:Warning ;
   sh:targetClass skos:Concept ;
@@ -97,7 +97,7 @@
     a sh:SPARQLConstraint ;
     sh:prefixes skos: ;
     rdfs:comment "Ambiguous Notation References" ;
-    sh:description "Concepts should not have identlical skos:notation literals." ;
+    sh:description "Concepts should not have identical skos:notation literals." ;
     sh:message "the concept has the same notation {$value} as {$path}" ;
     sh:select """
     SELECT $this (?other as ?path) ?value
@@ -189,8 +189,8 @@
   sh:severity sh:Warning ;
   sh:sparql [
     sh:prefixes skos: ;
-    rdfs:comment "Overlapping Labels in the same Concept Scheme (concepts with the same label in the same concept scheme)" ;
-    sh:message "Overlapping Labels in the same Concept Scheme (there is concept '{$this}' with the same pref label in language '{$lang}' for concept '{$value}'). Label: '{$pl}" ;
+    rdfs:comment "Overlapping labels in the same Concept Scheme (concepts with the same label in the same concept scheme)" ;
+    sh:message "Overlapping labels in the same Concept Scheme (there is concept '{$this}' with the same pref label in language '{$lang}' for concept '{$value}'). Label: '{$pl}" ;
     sh:select """
     SELECT $this (skos:prefLabel AS ?path) (?other as ?value) (lang(?pl) as ?lang) $pl
     WHERE {
@@ -211,7 +211,7 @@
   sh:sparql [
     a sh:SPARQLConstraint ;
     sh:prefixes skos: ;
-    rdfs:comment "Top Concept Having Broader Concept" ;
+    rdfs:comment "Top concept having broader concept" ;
     sh:message "The top concept has a broader concept" ;
     sh:select """
     SELECT DISTINCT $this

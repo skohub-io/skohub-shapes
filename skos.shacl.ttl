@@ -13,10 +13,13 @@
 # declare the skos prefix to use it in later SPARQL-based constraints
 skos:
   a owl:Ontology ;
-  owl:imports sh: ;
   sh:declare [
     sh:prefix "skos" ;
     sh:namespace "http://www.w3.org/2004/02/skos/core#"^^xsd:anyURI ;
+  ] ,
+  [
+    sh:prefix "sh" ;
+    sh:namespace "https://www.w3.org/ns/shacl#"^^xsd:anyURI ;
   ] .
 
 ####################
@@ -110,6 +113,7 @@ skos:
   sh:targetSubjectsOf skos:narrower ;
   sh:targetSubjectsOf skos:related ;
   sh:sparql [
+    sh:prefixes skos: ;    
     sh:message "S19/S20: domain and range of SKOS semantic relations is the class skos:Concept. " ;
     sh:select """
     SELECT $this

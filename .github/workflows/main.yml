@@ -8,3 +8,4 @@ jobs:
       - uses: actions/checkout@v5
       - name: Validate with script
         run: ${GITHUB_WORKSPACE}/scripts/test.sh
+        
